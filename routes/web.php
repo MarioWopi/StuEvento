@@ -42,6 +42,18 @@ Route::group(['prefix' => "events"], function () {
         '',
         [EventController::class, 'store']
     )->name("events.store");
+    Route::get(
+        '/{id}',
+        [EventController::class, 'show']
+    );
+    Route::get(
+        '/{id}/register',
+        [EventController::class, 'register']
+    );
+    Route::post(
+        '/{id}/attendees',
+        [EventController::class, 'storeAttendee']
+    );
 });
 
 
