@@ -64,11 +64,36 @@ class EventController extends Controller
 
         $assistantEvent->user_id = $request->input('assistant');
 
+        dd($request->input('assistant')->where('event_id', '=', $idEvent)->exists());
+
         if (UserEventsAttendee::where('user_id', '=', $request->input('assistant'))->where('event_id', '=', $idEvent)->exists()) {
             return redirect()->back();
         } else {
             $assistantEvent->save();
             return redirect('/events');
         }
+    }
+
+    public function edit($id)
+    {
+
+        $event = Event::find($id);
+
+        return (view("event.edit", ['event' => $event]));
+    }
+
+    public function update($id, Request $request)
+    {
+
+        $event = Event::find($id);
+
+        $event->title = $request->input('title');
+        $event->description = $request->input('description');
+        $event->location = $request->input('location');
+        $event->date = $request->input('date');
+
+        $event->save();
+
+        return redirect('/events');
     }
 }
