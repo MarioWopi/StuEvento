@@ -33,9 +33,11 @@
                                 <td> {{$event->location}} </td>
                                 <td> {{$event->date}} </td>
                                 <td>
-
-                                
-
+                                    <ol>
+                                        @foreach($assistants as $assistant)
+                                        <li>{{$assistant}}</li>
+                                        @endforeach
+                                    </ol>
                                 </td>
                                 <td>
                                     <a href="/events/{{$event->id}}/register">

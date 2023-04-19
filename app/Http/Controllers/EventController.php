@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\User;
-use App\Models\UserEventsAttendee;
+use App\Models\UserEventAttendee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +46,9 @@ class EventController extends Controller
 
         $event = Event::find($id);
 
-        return (view("event.showevent", ['event' => $event]));
+        $assistants = UserEventAttendee::where('event_id', $id)->with('user')->get()->pluck('user.name');
+
+        return (view("event.showevent", ['event' => $event, 'assistants' => $assistants]));
     }
 
     public function register($id)
@@ -60,13 +62,12 @@ class EventController extends Controller
     public function storeAttendee($idEvent, Request $request)
     {
 
-        $assistantEvent = new UserEventsAttendee();
+        $assistantEvent = new UserEventAttendee();
 
         $assistantEvent->user_id = $request->input('assistant');
+        $assistantEvent->event_id = $idEvent;
 
-        dd($request->input('assistant')->where('event_id', '=', $idEvent)->exists());
-
-        if (UserEventsAttendee::where('user_id', '=', $request->input('assistant'))->where('event_id', '=', $idEvent)->exists()) {
+        if (UserEventAttendee::where('user_id', '=', $request->input('assistant'))->where('event_id', '=', $idEvent)->exists()) {
             return redirect()->back();
         } else {
             $assistantEvent->save();
